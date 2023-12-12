@@ -5,7 +5,7 @@ with open('dummy.pdf', 'rb') as book:
     reader = PyPDF2.PdfReader(book)
 
     engine = pyttsx3.init()
-    engine.setProperty("rate", 100)
+    engine.setProperty("rate", 140)
 
     for page in range(len(reader.pages)):
         next_page = reader.pages[page]
