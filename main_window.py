@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog
+from AudiobookConverter import AudiobookConverter
 
 def on_file_upload():
     file_path = filedialog.askopenfilename(title="Select a file")
@@ -14,10 +15,13 @@ def on_folder_select():
 def on_submit():
     selected_voice = voice_var.get()
     selected_value = slider_var.get()
-    print("Filename:", filename_entry.get())
-    print("Voice:", selected_voice)
-    print("Slider Value:", selected_value)
-    print("Target Folder:", folder_entry.get())
+    audiobook = AudiobookConverter(filename_entry.get(), folder_entry.get())
+    audiobook.convert()
+
+    # print("Filename:", filename_entry.get())
+    # print("Voice:", selected_voice)
+    # print("Slider Value:", selected_value)
+    # print("Target Folder:", folder_entry.get())
 
 # Create the main window
 root = tk.Tk()
