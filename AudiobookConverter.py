@@ -9,23 +9,21 @@ downloads_folder = os.path.join(home, 'Downloads')
 class AudiobookConverter:
     def __init__(self, target, path='', rate=140, gender='male'):
         self.target = target
-        self.path = path if path else downloads_folder
+        self.path = path if path else str(Path.home() / 'Downloads')
         self.rate = rate
         self.gender = gender
         self.filename = 'audiobook.mp3'
+        self.engine = pyttsx3.init()
+        self.engine.setProperty("rate", self.rate)
 
     def convert(self):
         with open(self.target, 'rb') as book:
             reader = PyPDF2.PdfReader(book)
 
-            engine = pyttsx3.init()
-            engine.setProperty("rate", self.rate)
-
             for page in range(len(reader.pages)):
                 next_page = reader.pages[page]
                 content = next_page.extract_text()
-
-                # engine.say(content)
-                file_path = self.path + '/' + self.filename if self.path else self.filename
-                engine.save_to_file(content, file_path)
-                engine.runAndWait()
+                file_path = os.path.join(self.path, self.filename)
+                self.engine.save_to_file(content, file_path)
+            
+            self.engine.runAndWait()
