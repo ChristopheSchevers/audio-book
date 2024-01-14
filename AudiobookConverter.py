@@ -3,18 +3,18 @@ import PyPDF2
 import os
 from pathlib import Path
 
-home = str(Path.home())
-downloads_folder = os.path.join(home, 'Downloads')
-
 class AudiobookConverter:
-    def __init__(self, target, path='', rate=140, gender='male'):
+    def __init__(self, target, path='', rate=140, voice=''):
         self.target = target
         self.path = path if path else str(Path.home() / 'Downloads')
         self.rate = rate
-        self.gender = gender
+        self.voice = voice
         self.filename = 'audiobook.mp3'
         self.engine = pyttsx3.init()
         self.engine.setProperty("rate", self.rate)
+
+        if self.voice:
+            self.engine.setProperty("voice", self.voice)
 
     def convert(self):
         with open(self.target, 'rb') as book:
@@ -25,5 +25,18 @@ class AudiobookConverter:
                 content = next_page.extract_text()
                 file_path = os.path.join(self.path, self.filename)
                 self.engine.save_to_file(content, file_path)
+                # self.engine.say(content)
+                # print(vars(self))
             
             self.engine.runAndWait()
+
+    def getVoicesDict(self):
+        voices = self.engine.getProperty('voices')
+        return {voice.name: voice.id for voice in voices}
+
+    def setVoice(self, name):
+        if name == "":
+           return name
+        
+        voices = self.getVoicesDict()
+        self.engine.setProperty('voice', voices[name])

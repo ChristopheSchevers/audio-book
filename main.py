@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import filedialog
 from AudiobookConverter import AudiobookConverter
 
+audiobook = AudiobookConverter('')
+
 def on_file_upload():
     file_path = filedialog.askopenfilename(title="Select a file")
     filename_entry.delete(0, tk.END)
@@ -15,13 +17,12 @@ def on_folder_select():
 def on_submit():
     selected_voice = voice_var.get()
     selected_rate = slider_var.get()
-    audiobook = AudiobookConverter(filename_entry.get(), folder_entry.get(), gender=selected_voice, rate=selected_rate)
+    # audiobook = AudiobookConverter(filename_entry.get(), folder_entry.get(), gender=selected_voice, rate=selected_rate)
+    audiobook.target = filename_entry.get()
+    audiobook.path = folder_entry.get()
+    audiobook.voice = audiobook.setVoice(selected_voice)
+    audiobook.rate = selected_rate
     audiobook.convert()
-
-    # print("Filename:", filename_entry.get())
-    # print("Voice:", selected_voice)
-    # print("Slider Value:", selected_rate)
-    # print("Target Folder:", folder_entry.get())
 
 # Create the main window
 root = tk.Tk()
@@ -50,7 +51,7 @@ folder_button.grid(row=1, column=2, padx=10, pady=5)
 # Voice selection dropdown
 voice_label = tk.Label(root, text="Voice:")
 voice_label.grid(row=2, column=0, padx=10, pady=5, sticky="E")
-voice_options = ["Default", "Male", "Female"]
+voice_options = list(audiobook.getVoicesDict().keys())
 voice_var = tk.StringVar(root)
 voice_var.set(voice_options[0])
 voice_dropdown = tk.OptionMenu(root, voice_var, *voice_options)
