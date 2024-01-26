@@ -17,6 +17,8 @@ class AudiobookConverter:
             self.engine.setProperty("voice", self.voice)
 
     def convert(self):
+        if not self.target:
+            return False
         with open(self.target, 'rb') as book:
             reader = PyPDF2.PdfReader(book)
 
@@ -24,9 +26,9 @@ class AudiobookConverter:
                 next_page = reader.pages[page]
                 content = next_page.extract_text()
                 file_path = os.path.join(self.path, self.filename)
+                file_path = file_path.replace('\\','/')
                 self.engine.save_to_file(content, file_path)
-                # self.engine.say(content)
-                # print(vars(self))
+                self.engine.say(content)
             
             self.engine.runAndWait()
 
@@ -39,4 +41,8 @@ class AudiobookConverter:
            return name
         
         voices = self.getVoicesDict()
-        self.engine.setProperty('voice', voices[name])
+        return self.engine.setProperty('voice', voices[name])
+
+    def setRate(self, rate):
+        self.rate = rate
+        return self.engine.setProperty('rate', self.rate)
